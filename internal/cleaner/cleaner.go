@@ -73,7 +73,6 @@ func WithDryRun(dryRun bool) Option {
 // or if they are older than the configured number of days.
 func (nc *NotificationsCleaner) Clean(ctx context.Context) error {
 	notifications, _, err := nc.GitHubClient.Activity.ListNotifications(ctx, &github.NotificationListOptions{
-		All: true,
 		ListOptions: github.ListOptions{
 			PerPage: 100,
 		},
@@ -125,8 +124,8 @@ func (nc *NotificationsCleaner) Clean(ctx context.Context) error {
 // nolint: gocyclo
 func (nc *NotificationsCleaner) canBeMarkedAsDone(ctx context.Context, n *github.Notification, threshold time.Time) (bool, error) {
 	// Rule 1: Check notiications older than the threshold
-	fmt.Println(threshold)
 	if n.UpdatedAt != nil && n.UpdatedAt.Time.Before(threshold) {
+		fmt.Printf("Notification %s is older than the threshold\n", n.GetID())
 		return true, nil
 	}
 
