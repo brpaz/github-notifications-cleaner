@@ -102,11 +102,12 @@ jobs:
           name: test-result
           path: test-result.html
 
-      - uses: codecov/codecov-action@v4
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          fail_ci_if_error: false
-          files: ./coverage.out
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.out
+          slug: brpaz/github-notifications-cleaner
 
       - name: Set appropriate job status
         run: |
@@ -136,19 +137,24 @@ jobs:
         run: |
           go install github.com/goreleaser/goreleaser@v1.25.1
 
-      - name: Publish release
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            goreleaser release --clean
-          else
-            goreleaser release --snapshot --clean
-          fi
+      - name: Publish release (snapshot)
+        uses: goreleaser/goreleaser-action@v6
+        if: github.event_name != 'release'
+        with:
+          args: release --snapshot --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish release (release)
+        uses: goreleaser/goreleaser-action@v6
+        if: github.event_name == 'release'
+        with:
+          args: release --snapshot --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload release artifacts
         uses: actions/upload-artifact@v4
-        if: github.event_name != 'release'
         with:
           name: release-artifacts
           path: dist/
