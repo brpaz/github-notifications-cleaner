@@ -7,11 +7,14 @@ import (
 	"os"
 
 	"github.com/brpaz/github-notifications-cleaner/cmd"
+	"github.com/brpaz/github-notifications-cleaner/internal/log"
 )
 
 func main() {
 	// Initialize the logger.
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: log.LvlFromEnv(),
+	}))
 	slog.SetDefault(logger)
 
 	// Execute the root command.

@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strconv"
 	"time"
 
 	"github.com/google/go-github/v69/github"
 )
 
 const (
-	TypeIssue             = "Issue"
-	TypePullRequest       = "PullRequest"
-	DefaultDaysThereshold = 15
+	TypeIssue            = "Issue"
+	TypePullRequest      = "PullRequest"
+	DefaultDaysThreshold = 30
 )
 
 // Cleaner defines the interface for cleaning notifications.
@@ -35,7 +36,7 @@ type Option func(*NotificationsCleaner)
 func NewNotificationsCleaner(opts ...Option) *NotificationsCleaner {
 	nc := &NotificationsCleaner{
 		GitHubClient:  github.NewClient(nil),
-		OlderThanDays: DefaultDaysThereshold,
+		OlderThanDays: DefaultDaysThreshold,
 		DryRun:        false,
 	}
 
@@ -72,52 +73,84 @@ func WithDryRun(dryRun bool) Option {
 // It marks notifications as done if they are related to closed pull requests/issues
 // or if they are older than the configured number of days.
 func (nc *NotificationsCleaner) Clean(ctx context.Context) error {
-	notifications, _, err := nc.GitHubClient.Activity.ListNotifications(ctx, &github.NotificationListOptions{
-		ListOptions: github.ListOptions{
-			PerPage: 100,
-		},
-	})
-	if err != nil {
-		return fmt.Errorf("error listing notifications: %w", err)
-	}
-
 	threshold := time.Now().AddDate(0, 0, -nc.OlderThanDays)
 
-	// TODO Process in parallel with a worker pool
-	for _, n := range notifications {
-		markDone, err := nc.canBeMarkedAsDone(ctx, n, threshold)
+	opts := &github.NotificationListOptions{
+		All: true,
+		ListOptions: github.ListOptions{
+			PerPage: 100,
+			Page:    1,
+		},
+	}
+
+	allNotications := make([]*github.Notification, 0)
+	for {
+		slog.Info("fetching notifications",
+			slog.Int("page", opts.Page),
+		)
+		notifications, resp, err := nc.GitHubClient.Activity.ListNotifications(ctx, opts)
 		if err != nil {
-			slog.Error("error checking notification",
-				slog.String("notification_id", n.GetID()),
-				slog.String("error", err.Error()),
-			)
-			continue
+			return fmt.Errorf("error listing notifications: %w", err)
 		}
 
-		if markDone {
-			slog.Info("found notification to mark as done",
-				slog.String("notification_id", n.GetID()),
-				slog.String("subject", n.GetSubject().GetTitle()),
-				slog.String("type", n.GetSubject().GetType()),
-			)
+		allNotications = append(allNotications, notifications...)
 
-			if nc.DryRun {
-				slog.Info("dry-run mode enabled. Skipping marking notification as done.")
-				continue
-			}
-
-			_, err := nc.GitHubClient.Activity.MarkThreadRead(ctx, n.GetID())
-			if err != nil {
-				// Log error but continue processing other notifications.
-				slog.Error("error marking notification as done",
-					slog.String("notification_id", n.GetID()),
-					slog.String("error", err.Error()),
-				)
-			}
+		if resp.NextPage == 0 {
+			break
 		}
+		opts.Page = resp.NextPage
+	}
+
+	for _, n := range allNotications {
+		nc.processNotification(ctx, n, threshold)
 	}
 
 	return nil
+}
+
+// processNotification processes a single notification.
+func (nc *NotificationsCleaner) processNotification(ctx context.Context, n *github.Notification, threshold time.Time) {
+	markDone, err := nc.canBeMarkedAsDone(ctx, n, threshold)
+	if err != nil {
+		slog.Error("error checking notification",
+			slog.String("notification_id", n.GetID()),
+			slog.String("error", err.Error()),
+		)
+		return
+	}
+
+	if !markDone {
+		return
+	}
+
+	slog.Info("marking notification as done",
+		slog.String("id", n.GetID()),
+		slog.String(("repository"), n.GetRepository().GetFullName()),
+		slog.String("subject", n.GetSubject().GetTitle()),
+	)
+
+	if nc.DryRun {
+		slog.Debug("dry-run mode enabled. Skipping marking notification as done.")
+		return
+	}
+
+	nID, err := strconv.Atoi(n.GetID())
+	if err != nil {
+		slog.Error("error converting notification ID to int",
+			slog.String("notification_id", n.GetID()),
+			slog.String("error", err.Error()),
+		)
+		return
+	}
+
+	_, err = nc.GitHubClient.Activity.MarkThreadDone(ctx, int64(nID))
+	if err != nil {
+		// Log error but continue processing other notifications.
+		slog.Error("error marking notification as done",
+			slog.String("notification_id", n.GetID()),
+			slog.String("error", err.Error()),
+		)
+	}
 }
 
 // canBeMarkedAsDone checks if a notification should be marked as done
@@ -125,7 +158,6 @@ func (nc *NotificationsCleaner) Clean(ctx context.Context) error {
 func (nc *NotificationsCleaner) canBeMarkedAsDone(ctx context.Context, n *github.Notification, threshold time.Time) (bool, error) {
 	// Rule 1: Check notiications older than the threshold
 	if n.UpdatedAt != nil && n.UpdatedAt.Time.Before(threshold) {
-		fmt.Printf("Notification %s is older than the threshold\n", n.GetID())
 		return true, nil
 	}
 

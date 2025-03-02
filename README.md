@@ -49,18 +49,15 @@ You can download pre-built binaries from the [releases page](https://github.com/
 github-notifications-cleaner clean --token YOUR_GITHUB_TOKEN
 ```
 
-> [!IMPORTANT] Number of Notifications
-> This tool will process at most 100 Notifications at a time, to be within limits of GitHub API. We could implement pagination, but for now it´s preferable to run this tool more frequently instead. (Ex: every hour.)
-
 #### Command Arguments
 
 The `github-notifications-cleaner clean` command accepts the following arguments:
 
-| Argument            | Short | Required | Default | Description                                                                                                      |
-| ------------------- | ----- | -------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
-| `--token`           | `-t`  | Yes      | -       | GitHub Personal Access Token with notifications access. Can also be set via `GITHUB_TOKEN` environment variable. |
-| `--days-thereshold` | `-d`  | No       | 15      | Mark notifications older than this number of days as done.                                                       |
-| `--dry-run`         | `-n`  | No       | `false` | Run in dry-run mode, which shows what would be cleaned without actually marking notifications as done.           |
+| Argument           | Short | Required | Default | Description                                                                                                      |
+| ------------------ | ----- | -------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
+| `--token`          | `-t`  | Yes      | -       | GitHub Personal Access Token with notifications access. Can also be set via `GITHUB_TOKEN` environment variable. |
+| `--days-threshold` | `-d`  | No       | 30      | Mark notifications older than this number of days as done.                                                       |
+| `--dry-run`        | `-n`  | No       | `false` | Run in dry-run mode, which shows what would be cleaned without actually marking notifications as done.           |
 
 > [!TIP]
 > The GitHub token should have `notifictation` and `repo` permissions.
@@ -72,7 +69,7 @@ The `github-notifications-cleaner clean` command accepts the following arguments
 github-notifications-cleaner clean --token YOUR_GITHUB_TOKEN
 
 # Mark notifications older than 30 days as done
-github-notifications-cleaner clean --token YOUR_GITHUB_TOKEN --days-thereshold 30
+github-notifications-cleaner clean --token YOUR_GITHUB_TOKEN --days-threshold 30
 
 # Run in dry-run mode to preview what would be cleaned
 github-notifications-cleaner clean --token YOUR_GITHUB_TOKEN --dry-run

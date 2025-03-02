@@ -24,7 +24,7 @@ func TestNewNotificationsCleaner(t *testing.T) {
 	t.Run("default initialization sets expected values", func(t *testing.T) {
 		nc := cleaner.NewNotificationsCleaner()
 		assert.NotNil(t, nc.GitHubClient, "expected default GitHubClient to be non-nil")
-		assert.Equal(t, cleaner.DefaultDaysThereshold, nc.OlderThanDays, "expected default OlderThanDays value")
+		assert.Equal(t, cleaner.DefaultDaysThreshold, nc.OlderThanDays, "expected default OlderThanDays value")
 		assert.False(t, nc.DryRun, "expected default DryRun to be false")
 	})
 
@@ -63,26 +63,21 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("old-1"),
+						ID:        github.Ptr("1"),
 						UpdatedAt: &github.Timestamp{Time: oldDate},
-						Subject: &github.NotificationSubject{
-							Title: github.Ptr("Old Notification"),
-							Type:  github.Ptr(cleaner.TypePullRequest),
-						},
 					},
 					{
-						ID:        github.Ptr("recent-1"),
+						ID:        github.Ptr("2"),
 						UpdatedAt: &github.Timestamp{Time: recentDate},
 						Subject: &github.NotificationSubject{
 							Title: github.Ptr("Recent Notification"),
-							Type:  github.Ptr(cleaner.TypePullRequest),
 						},
 					},
 				})
 
 			gock.New("https://api.github.com").
-				Patch("/notifications/threads/old-1").
-				Reply(205)
+				Delete("/notifications/threads/1").
+				Reply(204)
 
 			// Test execution
 			githubClient := setupMockClient(t)
@@ -106,7 +101,7 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("pr-closed"),
+						ID:        github.Ptr("1"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
 							Title: github.Ptr("Closed Pull Request"),
@@ -126,8 +121,8 @@ func TestClean(t *testing.T) {
 				})
 
 			gock.New("https://api.github.com").
-				Patch("/notifications/threads/pr-closed").
-				Reply(205)
+				Delete("/notifications/threads/1").
+				Reply(204)
 
 			githubClient := setupMockClient(t)
 			nc := cleaner.NewNotificationsCleaner(
@@ -148,7 +143,7 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("issue-closed"),
+						ID:        github.Ptr("1"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
 							Title: github.Ptr("Closed Issue"),
@@ -168,8 +163,8 @@ func TestClean(t *testing.T) {
 				})
 
 			gock.New("https://api.github.com").
-				Patch("/notifications/threads/issue-closed").
-				Reply(205)
+				Delete("/notifications/threads/1").
+				Reply(204)
 
 			githubClient := setupMockClient(t)
 			nc := cleaner.NewNotificationsCleaner(
@@ -190,7 +185,7 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("issue-open"),
+						ID:        github.Ptr("1"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
 							Title: github.Ptr("Open Issue"),
@@ -223,37 +218,35 @@ func TestClean(t *testing.T) {
 		})
 	})
 
-	t.Run("settings behavior", func(t *testing.T) {
-		t.Run("respects dry-run mode", func(t *testing.T) {
-			defer gock.Off()
+	t.Run("respects dry-run mode", func(t *testing.T) {
+		defer gock.Off()
 
-			gock.New("https://api.github.com").
-				Get("/notifications").
-				Reply(200).
-				JSON([]*github.Notification{
-					{
-						ID:        github.Ptr("dryrun-test"),
-						UpdatedAt: &github.Timestamp{Time: time.Now().AddDate(0, 0, -20)},
-						Subject: &github.NotificationSubject{
-							Title: github.Ptr("Old PR"),
-							Type:  github.Ptr(cleaner.TypePullRequest),
-						},
+		gock.New("https://api.github.com").
+			Get("/notifications").
+			Reply(200).
+			JSON([]*github.Notification{
+				{
+					ID:        github.Ptr("1"),
+					UpdatedAt: &github.Timestamp{Time: time.Now().AddDate(0, 0, -20)},
+					Subject: &github.NotificationSubject{
+						Title: github.Ptr("Old PR"),
+						Type:  github.Ptr(cleaner.TypePullRequest),
 					},
-				})
+				},
+			})
 
-			// No MarkThreadRead call expected in dry-run mode
+		// No MarkThreadRead call expected in dry-run mode
 
-			githubClient := setupMockClient(t)
-			nc := cleaner.NewNotificationsCleaner(
-				cleaner.WithGitHubClient(githubClient),
-				cleaner.WithOlderThanDays(15),
-				cleaner.WithDryRun(true),
-			)
+		githubClient := setupMockClient(t)
+		nc := cleaner.NewNotificationsCleaner(
+			cleaner.WithGitHubClient(githubClient),
+			cleaner.WithOlderThanDays(15),
+			cleaner.WithDryRun(true),
+		)
 
-			err := nc.Clean(context.Background())
-			require.NoError(t, err)
-			assert.True(t, gock.IsDone())
-		})
+		err := nc.Clean(context.Background())
+		require.NoError(t, err)
+		assert.True(t, gock.IsDone())
 	})
 
 	t.Run("error handling", func(t *testing.T) {

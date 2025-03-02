@@ -63,7 +63,6 @@ To start your devenv envrionment shell: run `direnv alllow`
 
 If you use VSCode or GitHub Codespaces, we also provide a [Devcontainer](https://containers.dev/) definition that you can use. It´s simply a wrapper for Devenv, but allows to start coding right way, without even installing Devenv on your machine.
 
-
 ### Development lifecycle
 
 This project follows [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow) for managing changes.

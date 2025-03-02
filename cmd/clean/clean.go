@@ -15,7 +15,7 @@ import (
 
 const (
 	flagToken  = "token"
-	flagDays   = "days-thereshold"
+	flagDays   = "days-threshold"
 	flagDryRun = "dry-run"
 )
 
@@ -29,7 +29,7 @@ func NewCleanCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "clean",
 		Short:   "Cleans up GitHub notifications.",
-		Example: `github-notifications-cleaner clean --token <GITHUB_TOKEN> --days-thereshold 15`,
+		Example: `github-notifications-cleaner clean --token <GITHUB_TOKEN> --days-threshold 15`,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if cmd.Flags().Changed(flagToken) {
 				return nil
@@ -41,7 +41,7 @@ func NewCleanCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringP(flagToken, "t", "", "GitHub Personal Access Token with notifications access")
-	cmd.Flags().IntP(flagDays, "d", cleaner.DefaultDaysThereshold, "Mark notifications older than this number of days as done.")
+	cmd.Flags().IntP(flagDays, "d", cleaner.DefaultDaysThreshold, "Mark notifications older than this number of days as done.")
 	cmd.Flags().BoolP(flagDryRun, "n", false, "Dry run mode")
 
 	_ = cmd.MarkFlagRequired(flagToken)
@@ -58,7 +58,7 @@ func initCleaner(cmd *cobra.Command) (Cleaner, context.Context, error) {
 		return nil, nil, fmt.Errorf("GitHub token is required")
 	}
 
-	daysThereshold, err := cmd.Flags().GetInt(flagDays)
+	daysThreshold, err := cmd.Flags().GetInt(flagDays)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -75,7 +75,7 @@ func initCleaner(cmd *cobra.Command) (Cleaner, context.Context, error) {
 	ghClient := github.NewClient(tc)
 	nc := cleaner.NewNotificationsCleaner(
 		cleaner.WithGitHubClient(ghClient),
-		cleaner.WithOlderThanDays(daysThereshold),
+		cleaner.WithOlderThanDays(daysThreshold),
 		cleaner.WithDryRun(dryRun),
 	)
 	return nc, ctx, nil

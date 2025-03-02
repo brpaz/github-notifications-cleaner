@@ -128,7 +128,7 @@ import "github.com/brpaz/github-notifications-cleaner/internal/cleaner"
 const (
     TypeIssue             = "Issue"
     TypePullRequest       = "PullRequest"
-    DefaultDaysThereshold = 15
+    DefaultDaysThreshold = 15
 )
 ```
 
