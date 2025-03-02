@@ -18,7 +18,8 @@ run:
 
 output:
   # colored-line-number|line-number|json|tab|checkstyle, default is "colored-line-number"
-  formats: colored-line-number
+  formats:
+    - colored-line-number
 
 linters:
   fast: false
@@ -64,7 +65,6 @@ linters-settings:
   gosec:
     severity: medium
     confidence: medium
-    nosec: true
   depguard:
     rules:
       prevent_unmaintained_packages:
