@@ -31,9 +31,9 @@ jobs:
           cache: false
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v5
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.57
+          version: v1.64.5
   lint-docker:
     name: Lint Dockerfile
     runs-on: ubuntu-latest
