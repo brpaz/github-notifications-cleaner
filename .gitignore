@@ -21,7 +21,6 @@ you prefer the allow list template instead of the deny list, see community templ
 go.work
 
 # Local Envrionment
-.devbox
 .env
 coverage
 
@@ -37,5 +36,4 @@ devenv.local.nix
 # direnv
 .direnv
 
-# pre-commit
-.pre-commit-config.yaml
+tags
