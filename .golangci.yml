@@ -17,9 +17,8 @@ run:
   allow-serial-runners: true
 
 output:
-  # colored-line-number|line-number|json|tab|checkstyle, default is "colored-line-number"
   formats:
-    - colored-line-number
+    - format: colored-line-number
 
 linters:
   fast: false
