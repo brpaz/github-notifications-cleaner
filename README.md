@@ -25,6 +25,13 @@ This tool was created specifically to address these pain points by automatically
 
 ## 🚀 Getting Started
 
+### Pre-requisites
+
+You must have a GitHub token, with `notifications` and `repo` permissions. You can generate a new one [here](https://github.com/settings/tokens/new).
+
+> [!IMPORTANT] Use classic token instead of fine grained token
+> The Github token will need to be able to access all your repos, in order to retrieve any Issue or Pull requests asscociated with a Notification. It´s best to use a classic token instead of a fine grained token for this scenario.
+
 ### Installation
 
 #### Using Go
@@ -47,6 +54,12 @@ You can download pre-built binaries from the [releases page](https://github.com/
 
 ```shell
 github-notifications-cleaner clean --token YOUR_GITHUB_TOKEN
+```
+
+or with docker:
+
+```shell
+docker run --rm -e GITHUB_TOKEN=<token> ghcr.io/brpaz/github-notifications-cleaner:latest clean
 ```
 
 #### Command Arguments
