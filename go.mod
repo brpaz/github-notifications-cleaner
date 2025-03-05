@@ -1,6 +1,8 @@
 module github.com/brpaz/github-notifications-cleaner
 
-go 1.23
+go 1.23.0
+
+toolchain go1.24.1
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -18,6 +20,6 @@ require (
 	github.com/google/go-github/v69 v69.1.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/oauth2 v0.26.0
+	golang.org/x/oauth2 v0.28.0
 	gopkg.in/h2non/gock.v1 v1.1.2
 )
