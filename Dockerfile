@@ -32,7 +32,7 @@ RUN --mount=target=. \
 # ====================================
 # Production stage
 # ====================================
-FROM alpine:3.21
+FROM alpine:3.24
 
 COPY --from=build /out/github-notifications-cleaner /bin
 
