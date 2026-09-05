@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v90/github"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 
@@ -72,7 +72,10 @@ func initCleaner(cmd *cobra.Command) (Cleaner, context.Context, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: githubToken})
 	tc := oauth2.NewClient(ctx, ts)
 
-	ghClient := github.NewClient(tc)
+	ghClient, err := github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		return nil, nil, err
+	}
 	nc := cleaner.NewNotificationsCleaner(
 		cleaner.WithGitHubClient(ghClient),
 		cleaner.WithOlderThanDays(daysThreshold),
