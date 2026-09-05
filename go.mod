@@ -1,10 +1,10 @@
 module github.com/brpaz/github-notifications-cleaner
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/go-querystring v1.2.0 // indirect
 	github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
@@ -17,6 +17,7 @@ require (
 
 require (
 	github.com/google/go-github/v69 v69.2.0
+	github.com/google/go-github/v90 v90.0.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/oauth2 v0.35.0
