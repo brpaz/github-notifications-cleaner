@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v90/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/h2non/gock.v1"
@@ -17,7 +17,9 @@ import (
 func setupMockClient(t *testing.T) *github.Client {
 	httpClient := &http.Client{}
 	gock.InterceptClient(httpClient)
-	return github.NewClient(httpClient)
+	client, err := github.NewClient(github.WithHTTPClient(httpClient))
+	require.NoError(t, err)
+	return client
 }
 
 func TestNewNotificationsCleaner(t *testing.T) {
@@ -30,7 +32,8 @@ func TestNewNotificationsCleaner(t *testing.T) {
 
 	t.Run("WithGitHubClient option sets the client", func(t *testing.T) {
 		customHTTPClient := &http.Client{}
-		customClient := github.NewClient(customHTTPClient)
+		customClient, err := github.NewClient(github.WithHTTPClient(customHTTPClient))
+		require.NoError(t, err)
 
 		nc := cleaner.NewNotificationsCleaner(cleaner.WithGitHubClient(customClient))
 		assert.Equal(t, customClient, nc.GitHubClient, "expected GitHubClient to be the custom one")

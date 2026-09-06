@@ -60,7 +60,7 @@ formatters:
           replacement: a[b:]
     goimports:
       local-prefixes:
-        - github.com/brpaz/go-lib-template
+        - github.com/brpaz/github-notifications-cleaner
   exclusions:
     generated: lax
     paths:

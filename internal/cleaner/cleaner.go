@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"strconv"
 	"time"
 
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v90/github"
 )
 
 const (
@@ -34,8 +33,15 @@ type Option func(*NotificationsCleaner)
 // NewNotificationsCleaner creates a new NotificationsCleaner instance
 // with the provided options. It initializes with a default GitHubClient.
 func NewNotificationsCleaner(opts ...Option) *NotificationsCleaner {
+	client, err := github.NewClient()
+	if err != nil {
+		// NewClient with no options never actually errors; this only
+		// guards against a future go-github change we'd need to notice.
+		panic(fmt.Sprintf("failed to create default github client: %v", err))
+	}
+
 	nc := &NotificationsCleaner{
-		GitHubClient:  github.NewClient(nil),
+		GitHubClient:  client,
 		OlderThanDays: DefaultDaysThreshold,
 		DryRun:        false,
 	}
@@ -134,16 +140,7 @@ func (nc *NotificationsCleaner) processNotification(ctx context.Context, n *gith
 		return
 	}
 
-	nID, err := strconv.Atoi(n.GetID())
-	if err != nil {
-		slog.Error("error converting notification ID to int",
-			slog.String("notification_id", n.GetID()),
-			slog.String("error", err.Error()),
-		)
-		return
-	}
-
-	_, err = nc.GitHubClient.Activity.MarkThreadDone(ctx, int64(nID))
+	_, err = nc.GitHubClient.Activity.MarkThreadDone(ctx, n.GetID())
 	if err != nil {
 		// Log error but continue processing other notifications.
 		slog.Error("error marking notification as done",
