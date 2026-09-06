@@ -1,7 +1,7 @@
 # =========================================
 # Build stage
 # =========================================
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine3.21 as build
+FROM --platform=$BUILDPLATFORM golang:1.26.5-alpine3.24 as build
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -37,4 +37,3 @@ FROM alpine:3.24
 COPY --from=build /out/github-notifications-cleaner /bin
 
 ENTRYPOINT ["/bin/github-notifications-cleaner"]
-
