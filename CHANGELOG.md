@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 - 2026-09-06
+
+### What's Changed
+
+#### 🚀 Features
+
+- fix(deps): migrate to go-github v91 @brpaz (#48)
+
+#### 🧩 Dependency Updates
+
+- chore(deps): pin dependencies @[renovate[bot]](https://github.com/apps/renovate) (#46)
+
+**Full Changelog**: https://github.com/brpaz/github-notifications-cleaner/compare/0.2.0...v0.3.0
+
 ## 0.2.0 - 2026-09-06
 
 ### What's Changed
@@ -23,10 +37,8 @@
 - chore(deps): update golang docker tag to v1.25 @[renovate[bot]](https://github.com/apps/renovate) (#18)
 - chore(deps): update alpine docker tag to v3.24 @[renovate[bot]](https://github.com/apps/renovate) (#13)
 - fix(deps): update module github.com/spf13/cobra to v1.10.2 @[renovate[bot]](https://github.com/apps/renovate) (#36)
-
 </details>
 **Full Changelog**: https://github.com/brpaz/github-notifications-cleaner/compare/0.1.0...v0.2.0
-
 ## 0.1.0 - 2025-03-02
 
 ### What's Changed
