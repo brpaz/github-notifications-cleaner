@@ -15,7 +15,7 @@
     pkgs.container-structure-test
     pkgs.docker
     pkgs.go-task
-    pkgs.go
+    pkgs.go_1_26
     pkgs.golangci-lint
     pkgs.gotestsum
     pkgs.delve

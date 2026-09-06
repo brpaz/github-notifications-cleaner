@@ -125,7 +125,7 @@ func (nc *NotificationsCleaner) processNotification(ctx context.Context, n *gith
 
 	slog.Info("marking notification as done",
 		slog.String("id", n.GetID()),
-		slog.String(("repository"), n.GetRepository().GetFullName()),
+		slog.String("repository", n.GetRepository().GetFullName()),
 		slog.String("subject", n.GetSubject().GetTitle()),
 	)
 
@@ -157,7 +157,7 @@ func (nc *NotificationsCleaner) processNotification(ctx context.Context, n *gith
 // nolint: gocyclo
 func (nc *NotificationsCleaner) canBeMarkedAsDone(ctx context.Context, n *github.Notification, threshold time.Time) (bool, error) {
 	// Rule 1: Check notiications older than the threshold
-	if n.UpdatedAt != nil && n.UpdatedAt.Time.Before(threshold) {
+	if n.UpdatedAt != nil && n.UpdatedAt.Before(threshold) {
 		return true, nil
 	}
 

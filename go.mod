@@ -1,6 +1,6 @@
 module github.com/brpaz/github-notifications-cleaner
 
-go 1.23
+go 1.26.5
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
