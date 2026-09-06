@@ -26,7 +26,7 @@ Package cmd contains the command definitions for the application.
 
 
 <a name="NewRootCmd"></a>
-## func NewRootCmd
+## func [NewRootCmd](<https://github.com/brpaz/github-notifications-cleaner/blob/main/cmd/root.go#L12>)
 
 ```go
 func NewRootCmd() *cobra.Command
@@ -47,7 +47,7 @@ import "github.com/brpaz/github-notifications-cleaner/cmd/clean"
 
 
 <a name="NewCleanCmd"></a>
-## func NewCleanCmd
+## func [NewCleanCmd](<https://github.com/brpaz/github-notifications-cleaner/blob/main/cmd/clean/clean.go#L28>)
 
 ```go
 func NewCleanCmd() *cobra.Command
@@ -56,7 +56,7 @@ func NewCleanCmd() *cobra.Command
 NewCleanCmd creates a new instance of the clean command.
 
 <a name="Cleaner"></a>
-## type Cleaner
+## type [Cleaner](<https://github.com/brpaz/github-notifications-cleaner/blob/main/cmd/clean/clean.go#L23-L25>)
 
 Cleaner defines the interface for the service that cleans up notifications.
 
@@ -93,7 +93,7 @@ var (
 ```
 
 <a name="NewCmd"></a>
-## func NewCmd
+## func [NewCmd](<https://github.com/brpaz/github-notifications-cleaner/blob/main/cmd/version/version.go#L18>)
 
 ```go
 func NewCmd() *cobra.Command
@@ -133,7 +133,7 @@ const (
 ```
 
 <a name="Cleaner"></a>
-## type Cleaner
+## type [Cleaner](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L19-L21>)
 
 Cleaner defines the interface for cleaning notifications.
 
@@ -144,7 +144,7 @@ type Cleaner interface {
 ```
 
 <a name="NotificationsCleaner"></a>
-## type NotificationsCleaner
+## type [NotificationsCleaner](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L24-L28>)
 
 NotificationsCleaner defines the cleaner struct.
 
@@ -157,7 +157,7 @@ type NotificationsCleaner struct {
 ```
 
 <a name="NewNotificationsCleaner"></a>
-### func NewNotificationsCleaner
+### func [NewNotificationsCleaner](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L35>)
 
 ```go
 func NewNotificationsCleaner(opts ...Option) *NotificationsCleaner
@@ -166,7 +166,7 @@ func NewNotificationsCleaner(opts ...Option) *NotificationsCleaner
 NewNotificationsCleaner creates a new NotificationsCleaner instance with the provided options. It initializes with a default GitHubClient.
 
 <a name="NotificationsCleaner.Clean"></a>
-### func \(\*NotificationsCleaner\) Clean
+### func \(\*NotificationsCleaner\) [Clean](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L81>)
 
 ```go
 func (nc *NotificationsCleaner) Clean(ctx context.Context) error
@@ -175,7 +175,7 @@ func (nc *NotificationsCleaner) Clean(ctx context.Context) error
 Clean performs cleaning notifications. It marks notifications as done if they are related to closed pull requests/issues or if they are older than the configured number of days.
 
 <a name="Option"></a>
-## type Option
+## type [Option](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L31>)
 
 Option defines a functional option for NotificationsCleaner.
 
@@ -184,7 +184,7 @@ type Option func(*NotificationsCleaner)
 ```
 
 <a name="WithDryRun"></a>
-### func WithDryRun
+### func [WithDryRun](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L72>)
 
 ```go
 func WithDryRun(dryRun bool) Option
@@ -193,7 +193,7 @@ func WithDryRun(dryRun bool) Option
 WithDryRun is an option to enable dry\-run mode.
 
 <a name="WithGitHubClient"></a>
-### func WithGitHubClient
+### func [WithGitHubClient](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L57>)
 
 ```go
 func WithGitHubClient(client *github.Client) Option
@@ -202,7 +202,7 @@ func WithGitHubClient(client *github.Client) Option
 WithGitHubClient is an option to set a custom GitHub client.
 
 <a name="WithOlderThanDays"></a>
-### func WithOlderThanDays
+### func [WithOlderThanDays](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/cleaner/cleaner.go#L65>)
 
 ```go
 func WithOlderThanDays(days int) Option
@@ -224,7 +224,7 @@ package log provides utilities for working with logs.
 
 
 <a name="LvlFromEnv"></a>
-## func LvlFromEnv
+## func [LvlFromEnv](<https://github.com/brpaz/github-notifications-cleaner/blob/main/internal/log/log.go#L11>)
 
 ```go
 func LvlFromEnv() slog.Level
