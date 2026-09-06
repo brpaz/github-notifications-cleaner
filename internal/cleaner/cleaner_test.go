@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-github/v90/github"
+	"github.com/google/go-github/v91/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/h2non/gock.v1"
@@ -66,14 +66,14 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("1"),
+						ID:        new("1"),
 						UpdatedAt: &github.Timestamp{Time: oldDate},
 					},
 					{
-						ID:        github.Ptr("2"),
+						ID:        new("2"),
 						UpdatedAt: &github.Timestamp{Time: recentDate},
 						Subject: &github.NotificationSubject{
-							Title: github.Ptr("Recent Notification"),
+							Title: new("Recent Notification"),
 						},
 					},
 				})
@@ -104,12 +104,12 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("1"),
+						ID:        new("1"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
-							Title: github.Ptr("Closed Pull Request"),
-							Type:  github.Ptr(cleaner.TypePullRequest),
-							URL:   github.Ptr("https://api.github.com/repos/owner/repo/pulls/123"),
+							Title: new("Closed Pull Request"),
+							Type:  new(cleaner.TypePullRequest),
+							URL:   new("https://api.github.com/repos/owner/repo/pulls/123"),
 						},
 					},
 				})
@@ -146,12 +146,12 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("1"),
+						ID:        new("1"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
-							Title: github.Ptr("Closed Issue"),
-							Type:  github.Ptr(cleaner.TypeIssue),
-							URL:   github.Ptr("https://api.github.com/repos/owner/repo/issues/456"),
+							Title: new("Closed Issue"),
+							Type:  new(cleaner.TypeIssue),
+							URL:   new("https://api.github.com/repos/owner/repo/issues/456"),
 						},
 					},
 				})
@@ -188,12 +188,12 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("1"),
+						ID:        new("1"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
-							Title: github.Ptr("Open Issue"),
-							Type:  github.Ptr(cleaner.TypeIssue),
-							URL:   github.Ptr("https://api.github.com/repos/owner/repo/issues/789"),
+							Title: new("Open Issue"),
+							Type:  new(cleaner.TypeIssue),
+							URL:   new("https://api.github.com/repos/owner/repo/issues/789"),
 						},
 					},
 				})
@@ -229,11 +229,11 @@ func TestClean(t *testing.T) {
 			Reply(200).
 			JSON([]*github.Notification{
 				{
-					ID:        github.Ptr("1"),
+					ID:        new("1"),
 					UpdatedAt: &github.Timestamp{Time: time.Now().AddDate(0, 0, -20)},
 					Subject: &github.NotificationSubject{
-						Title: github.Ptr("Old PR"),
-						Type:  github.Ptr(cleaner.TypePullRequest),
+						Title: new("Old PR"),
+						Type:  new(cleaner.TypePullRequest),
 					},
 				},
 			})
@@ -281,12 +281,12 @@ func TestClean(t *testing.T) {
 				Reply(200).
 				JSON([]*github.Notification{
 					{
-						ID:        github.Ptr("pr-error"),
+						ID:        new("pr-error"),
 						UpdatedAt: &github.Timestamp{Time: time.Now()},
 						Subject: &github.NotificationSubject{
-							Title: github.Ptr("PR with Error"),
-							Type:  github.Ptr(cleaner.TypePullRequest),
-							URL:   github.Ptr("https://api.github.com/repos/owner/repo/pulls/999"),
+							Title: new("PR with Error"),
+							Type:  new(cleaner.TypePullRequest),
+							URL:   new("https://api.github.com/repos/owner/repo/pulls/999"),
 						},
 					},
 				})
