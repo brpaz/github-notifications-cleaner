@@ -25,6 +25,12 @@
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "github actions"
+    },
+    {
+      "description": "Sync Go version across go.mod and Dockerfile",
+      "matchDatasources": ["golang-version", "docker"],
+      "matchPackageNames": ["go", "golang"],
+      "groupName": "go version"
     }
   ]
 }
